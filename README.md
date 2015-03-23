@@ -62,21 +62,21 @@ float
 comp-lzo adaptive
 keepalive 10 120
 auth-user-pass
-<ca>
+&lt;ca&gt;
 -----BEGIN CERTIFICATE-----
 PASTE /etc/openvpn/easy-rsa/keys/ca.crt HERE
 -----END CERTIFICATE-----
-</ca>
-<cert>
+&lt;/ca&gt;
+&lt;cert&gt;
 -----BEGIN CERTIFICATE-----
 PASTE /etc/openvpn/easy-rsa/keys/client1.crt HERE
 -----END CERTIFICATE-----
-</cert>
-<key>
+&lt;/cert&gt;
+&lt;key&gt;
 -----BEGIN PRIVATE KEY-----
 PASTE /etc/openvpn/easy-rsa/keys/client1.key HERE
 -----END PRIVATE KEY-----
-</key>
+&lt;/key&gt;
 ns-cert-type server
 cipher AES-256-CBC
 resolv-retry infinite
@@ -90,4 +90,8 @@ $ sudo sysctl -w net.ipv4.ip_forward=1
 <pre>
 # You might need to 192.168.1.0 with your own LAN address.
 sudo iptables -I INPUT -i tun0 -d 192.168.1.0/24 -j DROP
+</pre>
+## Auto start openvpn
+<pre>
+# /etc/init.d/openvpn start
 </pre>

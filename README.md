@@ -14,7 +14,6 @@ $ sudo bash
 # ./clean-all
 # ./build-ca
 # ./build-key-server server
-# ./build-key client1
 # ./build-dh
 </pre>
 ## Configure openvpn
@@ -33,7 +32,7 @@ key /etc/openvpn/easy-rsa/keys/server.key
 dh /etc/openvpn/easy-rsa/keys/dh2048.pem
 server 10.8.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt
-push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 8.8.8.8"
 keepalive 10 120
 cipher AES-256-CBC
 comp-lzo
@@ -50,6 +49,7 @@ Test your configuration with:
 </pre>
 ## Configure client
 <pre>
+# ./build-key client1
 # vi client1.ovpn
 </pre>
 Paste the following:
@@ -88,7 +88,7 @@ $ sudo sysctl -w net.ipv4.ip_forward=1
 </pre>
 ## Disable VPN client access to LAN (optional):
 <pre>
-# You might need to 192.168.1.0 with your own LAN address.
+# You'll need to replace 192.168.1.0/24 with your own LAN address.
 sudo iptables -I INPUT -i tun0 -d 192.168.1.0/24 -j DROP
 </pre>
 ## Auto start openvpn

@@ -87,11 +87,11 @@ nobind
 $ sudo sysctl -w net.ipv4.ip_forward=1
 </pre>
 ## Disable VPN client access to LAN (optional):
+You'll need to replace "192.168.1.0/24" with your own LAN address.
 <pre>
-# You'll need to replace 192.168.1.0/24 with your own LAN address.
-sudo iptables -I INPUT -i tun0 -d 192.168.1.0/24 -j DROP
+$ sudo iptables -I INPUT -i tun0 -d 192.168.1.0/24 -j DROP
 </pre>
 ## Auto start openvpn
 <pre>
-# /etc/init.d/openvpn start
+$ sudo /etc/init.d/openvpn start
 </pre>

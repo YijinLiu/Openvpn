@@ -32,6 +32,7 @@ key /etc/openvpn/easy-rsa/keys/server.key
 dh /etc/openvpn/easy-rsa/keys/dh2048.pem
 server 10.8.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt
+push "redirect-gateway def1"
 push "dhcp-option DNS 8.8.8.8"
 keepalive 10 120
 cipher AES-256-CBC
@@ -61,7 +62,6 @@ remote YOUR-IP 1194
 float
 comp-lzo adaptive
 keepalive 10 120
-auth-user-pass
 &lt;ca&gt;
 -----BEGIN CERTIFICATE-----
 PASTE /etc/openvpn/easy-rsa/keys/ca.crt HERE

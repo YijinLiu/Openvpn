@@ -42,7 +42,8 @@ group nogroup
 persist-key
 persist-tun
 status openvpn-status.log
-verb 3
+verb 4
+log-append /var/log/openvpn.log
 </pre>
 Test your configuration with:
 <pre>

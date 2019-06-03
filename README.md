@@ -34,11 +34,11 @@ server 10.8.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt
 push "redirect-gateway def1"
 push "dhcp-option DNS 8.8.8.8"
+push "topology subnet"
+topology subnet
 keepalive 10 120
 cipher AES-256-CBC
 comp-lzo
-user nobody
-group nogroup
 persist-key
 persist-tun
 status openvpn-status.log
@@ -86,6 +86,9 @@ nobind
 ## Enable internet access (optional):
 <pre>
 $ sudo sysctl -w net.ipv4.ip_forward=1
+$ sudo iptables -A FORWARD -o eth0 -i tun0 -s 10.8.0.0/24 -m conntrack --ctstate NEW -j ACCEPT
+$ sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+$ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 </pre>
 ## Disable VPN client access to LAN (optional):
 You'll need to replace "192.168.1.0/24" with your own LAN address.
@@ -94,5 +97,6 @@ $ sudo iptables -I INPUT -i tun0 -d 192.168.1.0/24 -j DROP
 </pre>
 ## Auto start openvpn
 <pre>
-$ sudo /etc/init.d/openvpn start
+$ sudo update-rc.d openvpn enable
+$ sudo service openvpn start
 </pre>

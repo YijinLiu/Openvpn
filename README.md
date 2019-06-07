@@ -1,10 +1,15 @@
 # How to setup openvpn server on Ubuntu
 =============================
-## Install packages
+## User docker
+<pre>
+$ make
+</pre>
+## Manually
+### Install packages
 <pre>
 $ sudo apt-get install openvpn easy-rsa
 </pre>
-## Generate keys
+### Generate keys
 <pre>
 $ sudo bash
 # cd /etc/openvpn
@@ -16,7 +21,7 @@ $ sudo bash
 # ./build-key-server server
 # ./build-dh
 </pre>
-## Configure openvpn
+### Configure openvpn
 <pre>
 # cd /etc/openvpn
 # vi server.conf
@@ -83,6 +88,7 @@ cipher AES-256-CBC
 resolv-retry infinite
 nobind
 </pre>
+
 ## Enable internet access (optional):
 <pre>
 $ sudo sysctl -w net.ipv4.ip_forward=1

@@ -1,6 +1,6 @@
 # How to setup openvpn server on Ubuntu
 =============================
-## User docker
+## Use docker
 <pre>
 $ make
 </pre>

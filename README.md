@@ -1,14 +1,42 @@
 # How to setup openvpn server on Ubuntu
 =============================
-## Use docker
+## Table of contents
+  * [Use Docker](#use-docker)
+    * [Start OpenVPN](#start-openvpn)
+    * [Generate client key](#generate-client-key)
+  * [Step by Step](#step-by-step)
+    * [Install packages](#install-packages)
+    * [Generate keys](#generate-keys)
+    * [Configure OpenVPN](#configue-openvpn)
+      * [Enable internet access](#enable-internet-access)
+      * [Disable VPN client access to LAN](#disable-vpn-client-access-to-lan)
+      * [Auto start OpenVPN](#auto-start-openvpn)
+    * [Configure client](#configure-client)
+
+## Use Docker
 <pre>
+$ apt install make docker.io
 $ make
 </pre>
-## Manually
+
+### Start OpenVPN
+<pre>
+$ docker start openvpn-server1
+$ docker exec openvpn-server1 bash -c "service openvpn start"
+</pre>
+
+### Generate client key
+<pre>
+$ docker exec openvpn-server1 bash -c "$HOME/Openvpn/new_client.sh --ip=$IP --port=$PORT --name=client1"
+</pre>
+
+## Step by Step
+
 ### Install packages
 <pre>
-$ sudo apt-get install openvpn easy-rsa
+$ sudo apt install openvpn easy-rsa
 </pre>
+
 ### Generate keys
 <pre>
 $ sudo bash
@@ -21,7 +49,8 @@ $ sudo bash
 # ./build-key-server server
 # ./build-dh
 </pre>
-### Configure openvpn
+
+### Configure OpenVPN
 <pre>
 # cd /etc/openvpn
 # vi server.conf
@@ -54,6 +83,27 @@ Test your configuration with:
 <pre>
 # openvpn server.conf
 </pre>
+
+### Enable internet access
+<pre>
+$ sudo sysctl -w net.ipv4.ip_forward=1
+$ sudo iptables -A FORWARD -o eth0 -i tun0 -s 10.8.0.0/24 -m conntrack --ctstate NEW -j ACCEPT
+$ sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+$ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+</pre>
+
+### Disable VPN client access to LAN
+You'll need to replace "192.168.1.0/24" with your own LAN address.
+<pre>
+$ sudo iptables -I INPUT -i tun0 -d 192.168.1.0/24 -j DROP
+</pre>
+
+### Auto start OpenVPN
+<pre>
+$ sudo update-rc.d openvpn enable
+$ sudo service openvpn start
+</pre>
+
 ## Configure client
 <pre>
 # ./build-key client1
@@ -87,22 +137,4 @@ ns-cert-type server
 cipher AES-256-CBC
 resolv-retry infinite
 nobind
-</pre>
-
-## Enable internet access (optional):
-<pre>
-$ sudo sysctl -w net.ipv4.ip_forward=1
-$ sudo iptables -A FORWARD -o eth0 -i tun0 -s 10.8.0.0/24 -m conntrack --ctstate NEW -j ACCEPT
-$ sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-$ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-</pre>
-## Disable VPN client access to LAN (optional):
-You'll need to replace "192.168.1.0/24" with your own LAN address.
-<pre>
-$ sudo iptables -I INPUT -i tun0 -d 192.168.1.0/24 -j DROP
-</pre>
-## Auto start openvpn
-<pre>
-$ sudo update-rc.d openvpn enable
-$ sudo service openvpn start
 </pre>
